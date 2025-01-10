@@ -4,7 +4,7 @@ import re
 from typing import Dict, List
 
 import eth_abi
-from eth_abi.exceptions import InsufficientDataBytes, NoEntriesFound, NonEmptyPaddingBytes
+from eth_abi.exceptions import InsufficientDataBytes, NoEntriesFound, NonEmptyPaddingBytes, InvalidPointer
 from eth_hash.auto import keccak
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
@@ -358,6 +358,8 @@ def _decode(inputs: List, topics: List, data: str) -> List:
         raise EventError("Event data has insufficient length")
     except NonEmptyPaddingBytes:
         raise EventError("Malformed data field in event log")
+    except InvalidPointer as e:
+        raise EventError(str(e))
     except OverflowError:
         raise EventError("Cannot decode event due to overflow error")
 
